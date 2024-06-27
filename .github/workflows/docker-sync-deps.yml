@@ -142,7 +142,7 @@ jobs:
     strategy:
       matrix:
         version:
-          - "latest"
+          - "1.22"
 
     steps:
       - name: login to aliyuncs
