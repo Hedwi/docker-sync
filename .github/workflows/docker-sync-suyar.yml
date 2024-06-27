@@ -1,4 +1,4 @@
-name: Docker Sync Suyar
+name: Docker Sync Deps
 
 on:
 #  push:
@@ -10,22 +10,15 @@ on:
     - cron: '0 21 * * *'
 
 jobs:
-  sync_suyar_php:
+
+  sync_consul:
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         version:
-          - "7.0"
-          - "7.1"
-          - "7.2"
-          - "7.3"
-          - "7.4"
-          - "8.0"
-          - "8.1"
-          - "8.2"
-          - "8.3"
+          - "1.18"
 
     steps:
       - name: login to aliyuncs
@@ -35,72 +28,133 @@ jobs:
           username: ${{ secrets.ALI_DOCKER_USER }}
           password: ${{ secrets.ALI_DOCKER_PASS }}
 
-      - name: sync php:${{ matrix.version }}-cli
+      - name: sync hedwi-consul:${{ matrix.version }}
         uses: akhilerm/tag-push-action@v2.1.0
         with:
-          src: docker.io/suyar/php:${{ matrix.version }}-cli
+          src: hedwi/consul:${{ matrix.version }}
           dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-cli
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/consul:${{ matrix.version }}
+  
+  sync_minio:
 
-      - name: sync php:${{ matrix.version }}-fpm
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/suyar/php:${{ matrix.version }}-fpm
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-fpm
+    runs-on: ubuntu-latest
 
-      - name: sync php:${{ matrix.version }}-cli-alpine
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/suyar/php:${{ matrix.version }}-cli-alpine
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-cli-alpine
+    strategy:
+      matrix:
+        version:
+          - "RELEASE.2024-06-11T03-13-30Z"
 
-      - name: sync php:${{ matrix.version }}-fpm-alpine
-        uses: akhilerm/tag-push-action@v2.1.0
+    steps:
+      - name: login to aliyuncs
+        uses: docker/login-action@v2
         with:
-          src: docker.io/suyar/php:${{ matrix.version }}-fpm-alpine
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-fpm-alpine
+          registry: ${{ secrets.ALI_DOCKER_REPO }}
+          username: ${{ secrets.ALI_DOCKER_USER }}
+          password: ${{ secrets.ALI_DOCKER_PASS }}
 
-      - name: sync php:${{ matrix.version }}-cli-supervisor
+      - name: sync minio:${{ matrix.version }}
         uses: akhilerm/tag-push-action@v2.1.0
         with:
-          src: docker.io/suyar/php:${{ matrix.version }}-cli-supervisor
+          src: hedwi/minio:${{ matrix.version }}
           dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-cli-supervisor
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/minio:${{ matrix.version }}
+  
 
-      - name: sync php:${{ matrix.version }}-cli-alpine-supervisor
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/suyar/php:${{ matrix.version }}-cli-alpine-supervisor
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-cli-alpine-supervisor
 
-      - name: sync php:${{ matrix.version }}-cli-cron
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/suyar/php:${{ matrix.version }}-cli-cron
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-cli-cron
+  sync_cockroach:
 
-      - name: sync php:${{ matrix.version }}-cli-alpine-cron
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/suyar/php:${{ matrix.version }}-cli-alpine-cron
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-cli-alpine-cron
+    runs-on: ubuntu-latest
 
-      - name: sync php:${{ matrix.version }}-integration
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/suyar/php:${{ matrix.version }}-integration
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-integration
+    strategy:
+      matrix:
+        version:
+          - "v23.2.5"
 
-      - name: sync php:${{ matrix.version }}-alpine-integration
+    steps:
+      - name: login to aliyuncs
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ALI_DOCKER_REPO }}
+          username: ${{ secrets.ALI_DOCKER_USER }}
+          password: ${{ secrets.ALI_DOCKER_PASS }}
+
+      - name: sync cockroach:${{ matrix.version }}
         uses: akhilerm/tag-push-action@v2.1.0
         with:
-          src: docker.io/suyar/php:${{ matrix.version }}-alpine-integration
+          src: hedwi/cockroach:${{ matrix.version }}
           dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/suyar/php:${{ matrix.version }}-alpine-integration
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/cockroach:${{ matrix.version }}
+  
+  sync_redis:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version:
+          - "6.0"
+
+    steps:
+      - name: login to aliyuncs
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ALI_DOCKER_REPO }}
+          username: ${{ secrets.ALI_DOCKER_USER }}
+          password: ${{ secrets.ALI_DOCKER_PASS }}
+
+      - name: sync redis:${{ matrix.version }}
+        uses: akhilerm/tag-push-action@v2.1.0
+        with:
+          src: hedwi/redis:${{ matrix.version }}
+          dst: |
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/redis:${{ matrix.version }}
+  
+
+
+  sync_nats:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version:
+          - "2.9.25"
+
+    steps:
+      - name: login to aliyuncs
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ALI_DOCKER_REPO }}
+          username: ${{ secrets.ALI_DOCKER_USER }}
+          password: ${{ secrets.ALI_DOCKER_PASS }}
+
+      - name: sync nats:${{ matrix.version }}
+        uses: akhilerm/tag-push-action@v2.1.0
+        with:
+          src: hedwi/nats:${{ matrix.version }}
+          dst: |
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/nats:${{ matrix.version }}
+  
+  sync_nginx:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version:
+          - "latest"
+
+    steps:
+      - name: login to aliyuncs
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ALI_DOCKER_REPO }}
+          username: ${{ secrets.ALI_DOCKER_USER }}
+          password: ${{ secrets.ALI_DOCKER_PASS }}
+
+      - name: sync nginx:${{ matrix.version }}
+        uses: akhilerm/tag-push-action@v2.1.0
+        with:
+          src: hedwi/nginx:${{ matrix.version }}
+          dst: |
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/nginx:${{ matrix.version }}
