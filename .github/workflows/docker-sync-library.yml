@@ -10,7 +10,7 @@ on:
     - cron: '0 21 * * *'
 
 jobs:
-  sync_nginx:
+  sync_inbox:
 
     runs-on: ubuntu-latest
 
@@ -18,13 +18,6 @@ jobs:
       matrix:
         version:
           - "latest"
-          - "stable"
-          - "alpine"
-          - "stable-alpine"
-          - "1.25"
-          - "1.25-alpine"
-          - "1.24"
-          - "1.24-alpine"
 
     steps:
       - name: login to aliyuncs
@@ -34,14 +27,15 @@ jobs:
           username: ${{ secrets.ALI_DOCKER_USER }}
           password: ${{ secrets.ALI_DOCKER_PASS }}
 
-      - name: sync nginx:${{ matrix.version }}
+      - name: sync hedwi-inbox:${{ matrix.version }}
         uses: akhilerm/tag-push-action@v2.1.0
         with:
-          src: docker.io/library/nginx:${{ matrix.version }}
+          src: hedwi/hedwi-inbox:${{ matrix.version }}
           dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/mirrors_hub/nginx:${{ matrix.version }}
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/hedwi-inbox:${{ matrix.version }}
 
-  sync_mysql:
+
+  sync_meetserver:
 
     runs-on: ubuntu-latest
 
@@ -49,23 +43,6 @@ jobs:
       matrix:
         version:
           - "latest"
-          - "8"
-          - "8.2"
-          - "8.2.0"
-          - "8.2-oracle"
-          - "8.2.0-oracle"
-          - "8.0"
-          - "8.0.35"
-          - "8.0-oracle"
-          - "8.0.35-oracle"
-          - "8.0-debian"
-          - "8.0.35-debian"
-          - "5"
-          - "5.7"
-          - "5.7.44"
-          - "5-oracle"
-          - "5.7-oracle"
-          - "5.7.44-oracle"
 
     steps:
       - name: login to aliyuncs
@@ -75,137 +52,10 @@ jobs:
           username: ${{ secrets.ALI_DOCKER_USER }}
           password: ${{ secrets.ALI_DOCKER_PASS }}
 
-      - name: sync mysql:${{ matrix.version }}
+      - name: sync hedwi-meetserver:${{ matrix.version }}
         uses: akhilerm/tag-push-action@v2.1.0
         with:
-          src: docker.io/library/mysql:${{ matrix.version }}
+          src: hedwi/hedwi-meetserver:${{ matrix.version }}
           dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/mirrors_hub/mysql:${{ matrix.version }}
-
-  sync_redis:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        version:
-          - "latest"
-          - "alpine"
-          - "5"
-          - "5-alpine"
-          - "5.0"
-          - "5.0-alpine"
-          - "6"
-          - "6-alpine"
-          - "6.0"
-          - "6.0-alpine"
-          - "6.2"
-          - "6.2-alpine"
-          - "7"
-          - "7-alpine"
-          - "7.0"
-          - "7.0-alpine"
-          - "7.2"
-          - "7.2-alpine"
-
-    steps:
-      - name: login to aliyuncs
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.ALI_DOCKER_REPO }}
-          username: ${{ secrets.ALI_DOCKER_USER }}
-          password: ${{ secrets.ALI_DOCKER_PASS }}
-
-      - name: sync redis:${{ matrix.version }}
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/library/redis:${{ matrix.version }}
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/mirrors_hub/redis:${{ matrix.version }}
-
-  sync_php:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        version:
-          - "7.1"
-          - "7.2"
-          - "7.3"
-          - "7.4"
-          - "8.0"
-          - "8.1"
-          - "8.2"
-          - "8.3"
-
-    steps:
-      - name: login to aliyuncs
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.ALI_DOCKER_REPO }}
-          username: ${{ secrets.ALI_DOCKER_USER }}
-          password: ${{ secrets.ALI_DOCKER_PASS }}
-
-      - name: sync php:${{ matrix.version }}-cli
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/library/php:${{ matrix.version }}-cli
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/mirrors_hub/php:${{ matrix.version }}-cli
-
-      - name: sync php:${{ matrix.version }}-fpm
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/library/php:${{ matrix.version }}-fpm
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/mirrors_hub/php:${{ matrix.version }}-fpm
-
-      - name: sync php:${{ matrix.version }}-cli-alpine
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/library/php:${{ matrix.version }}-cli-alpine
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/mirrors_hub/php:${{ matrix.version }}-cli-alpine
-
-      - name: sync php:${{ matrix.version }}-fpm-alpine
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/library/php:${{ matrix.version }}-fpm-alpine
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/mirrors_hub/php:${{ matrix.version }}-fpm-alpine
-
-  sync_vaultwarden_server:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        version:
-          - "latest"
-          - "alpine"
-          - "1.29.0"
-          - "1.29.0-alpine"
-          - "1.29.1"
-          - "1.29.2-alpine"
-          - "1.29.2"
-          - "1.29.2-alpine"
-          - "1.30.0"
-          - "1.30.0-alpine"
-          - "1.30.1"
-          - "1.30.1-alpine"
-
-    steps:
-      - name: login to aliyuncs
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ secrets.ALI_DOCKER_REPO }}
-          username: ${{ secrets.ALI_DOCKER_USER }}
-          password: ${{ secrets.ALI_DOCKER_PASS }}
-
-      - name: sync vaultwarden/server:${{ matrix.version }}
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: docker.io/vaultwarden/server:${{ matrix.version }}
-          dst: |
-            ${{ secrets.ALI_DOCKER_REPO }}/mirrors_hub/vaultwarden_server:${{ matrix.version }}
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/hedwi-meetserver:${{ matrix.version }}
+  
