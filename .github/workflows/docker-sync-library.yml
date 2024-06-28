@@ -236,7 +236,29 @@ jobs:
           dst: |
             ${{ secrets.ALI_DOCKER_REPO }}/hedwi/hedwi-smtp:${{ matrix.version }}
   
-  
+  sync_hedwi_aiserver:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version:
+          - "latest"
+
+    steps:
+      - name: login to aliyuncs
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ALI_DOCKER_REPO }}
+          username: ${{ secrets.ALI_DOCKER_USER }}
+          password: ${{ secrets.ALI_DOCKER_PASS }}
+
+      - name: sync hedwi-aiserver:${{ matrix.version }}
+        uses: akhilerm/tag-push-action@v2.1.0
+        with:
+          src: hedwi/hedwi-aiserver:${{ matrix.version }}
+          dst: |
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/hedwi-aiserver:${{ matrix.version }}
 
   sync_hedwi_mqtt:
 
