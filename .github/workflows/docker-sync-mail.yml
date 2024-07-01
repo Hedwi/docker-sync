@@ -10,8 +10,7 @@ on:
     - cron: '0 21 * * *'
 
 jobs:
-
-sync_hedwi_task:
+  sync_hedwi_task:
 
     runs-on: ubuntu-latest
 
@@ -162,3 +161,4 @@ sync_hedwi_task:
             ${{ secrets.ALI_DOCKER_REPO }}/hedwi/hedwi-smtp:${{ matrix.version }}
   
  
+
