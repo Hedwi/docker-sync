@@ -1,0 +1,37 @@
+name: Docker Sync Hedwi
+
+on:
+#  push:
+#    branches: [ main ]
+
+  workflow_dispatch:
+
+  schedule:
+    - cron: '0 21 * * *'
+
+jobs:
+
+  sync_hedwi_meetserver:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        version:
+          - "latest"
+
+    steps:
+      - name: login to aliyuncs
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.ALI_DOCKER_REPO }}
+          username: ${{ secrets.ALI_DOCKER_USER }}
+          password: ${{ secrets.ALI_DOCKER_PASS }}
+
+      - name: sync hedwi-meetserver:${{ matrix.version }}
+        uses: akhilerm/tag-push-action@v2.1.0
+        with:
+          src: hedwi/hedwi-meetserver:${{ matrix.version }}
+          dst: |
+            ${{ secrets.ALI_DOCKER_REPO }}/hedwi/hedwi-meetserver:${{ matrix.version }}
+
