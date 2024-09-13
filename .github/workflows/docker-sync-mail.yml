@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
   schedule:
-    - cron: '0 21 * * *'
+    - cron: '0 21 * * 5'
 
 jobs:
   sync_hedwi_task:
